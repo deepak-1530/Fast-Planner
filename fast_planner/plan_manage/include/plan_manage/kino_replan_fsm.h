@@ -90,7 +90,7 @@ private:
   bool trigger_, have_target_, have_odom_;
   FSM_EXEC_STATE exec_state_;
 
-  Eigen::Vector3d odom_pos_, odom_vel_;  // odometry state
+  Eigen::Vector3d odom_pos_, odom_vel_;                           // odometry state
   Eigen::Quaterniond odom_orient_;
 
   Eigen::Vector3d start_pt_, start_vel_, start_acc_, start_yaw_;  // start state

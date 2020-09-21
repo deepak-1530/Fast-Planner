@@ -37,6 +37,11 @@
 #include "plan_env/edt_environment.h"
 #include <boost/functional/hash.hpp>
 #include <queue>
+
+/* Add Octomap EDT Library */
+#include<dynamicEDT3D/dynamicEDTOctomap.h> 
+
+
 namespace fast_planner {
 // #define REACH_HORIZON 1
 // #define REACH_END 2
@@ -45,6 +50,8 @@ namespace fast_planner {
 #define IN_OPEN_SET 'b'
 #define NOT_EXPAND 'c'
 #define inf 1 >> 30
+
+typedef DynamicEDTOctomap* OctoEdtPtr;
 
 class PathNode {
 public:
@@ -66,7 +73,8 @@ public:
   }
   ~PathNode(){};
 };
-typedef PathNode* PathNodePtr;
+
+typedef PathNode* PathNodePtr; // pointer to path nodes
 
 class NodeComparator {
 public:
@@ -123,17 +131,25 @@ public:
 class KinodynamicAstar {
 private:
   /* ---------- main data structure ---------- */
-  vector<PathNodePtr> path_node_pool_;
+  vector<PathNodePtr> path_node_pool_;  // pointers to the path nodes
   int use_node_num_, iter_num_;
-  NodeHashTable expanded_nodes_;
-  std::priority_queue<PathNodePtr, std::vector<PathNodePtr>, NodeComparator> open_set_;
-  std::vector<PathNodePtr> path_nodes_;
+  NodeHashTable expanded_nodes_;        // Nodes that expand at any given parent node
+  std::priority_queue<PathNodePtr, std::vector<PathNodePtr>, NodeComparator> open_set_; // this is a priority queue
+  std::vector<PathNodePtr> path_nodes_; // final path nodes
 
   /* ---------- record data ---------- */
   Eigen::Vector3d start_vel_, end_vel_, start_acc_;
   Eigen::Matrix<double, 6, 6> phi_;  // state transit matrix
   // shared_ptr<SDFMap> sdf_map;
-  EDTEnvironment::Ptr edt_environment_;
+  EDTEnvironment::Ptr edt_environment_;  // pointer to the EDT environment
+  
+  
+  /**
+   * Pointer to Octomap EDT
+  **/
+  OctoEdtPtr ptr;
+
+  
   bool is_shot_succ_ = false;
   Eigen::MatrixXd coef_shot_;
   double t_shot_;
@@ -187,6 +203,8 @@ public:
              double time_start = -1.0);
 
   void setEnvironment(const EDTEnvironment::Ptr& env);
+
+  void setEnvironmentOctomap(const OctoEdtPtr env); // env is a pointer to the EDT map calculated using Octomap
 
   std::vector<Eigen::Vector3d> getKinoTraj(double delta_t);
 

@@ -47,12 +47,12 @@ int KinodynamicAstar::search(Eigen::Vector3d start_pt, Eigen::Vector3d start_v, 
   cur_node->parent        = NULL;
   cur_node->state.head(3) = start_pt;
   cur_node->state.tail(3) = start_v;
-  cur_node->index         = posToIndex(start_pt);
+  cur_node->index         = posToIndex(start_pt);    // posToIndex transformation
   cur_node->g_score       = 0.0;
 
-  Eigen::VectorXd end_state(6);
-  Eigen::Vector3i end_index;
-  double          time_to_goal;
+  Eigen::VectorXd end_state(6);                      // end state
+  Eigen::Vector3i end_index;                         // end index
+  double          time_to_goal; 
 
   end_state.head(3)    = end_pt;
   end_state.tail(3)    = end_v;
